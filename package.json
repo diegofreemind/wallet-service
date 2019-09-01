@@ -4,5 +4,15 @@
   "description": "manages seller's wallet",
   "main": "index.js",
   "author": "Vitor Diego",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^24.9.0"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "dependencies": {
+    "dotenv": "^8.1.0",
+    "mongoose": "^5.6.11"
+  }
 }
