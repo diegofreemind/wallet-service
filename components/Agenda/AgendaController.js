@@ -1,4 +1,5 @@
 const agendaModel = require('./AgendaModel');
+const moment = require('moment-timezone');
 
 function validate(...args) {
 
@@ -27,29 +28,43 @@ async function createEventInAgenda(event) {
     } catch (error) {
 
         console.log(error);
-        throw new Error('Error creating event');
+        throw new Error(`Error creating event : ${error}`);
     }
 }
 
-async function getAvailability(id, date) {
+async function getAvailability(sellerId, customerId, requestedDate) {
 
     try {
 
-        validate({ id, date });
+        validate({ sellerId, customerId, requestedDate });
 
-        const availability = await agendaModel.find({ id, date });
+        const start = requestedDate.subtract(1, 'hours');
+        const end = requestedDate.add(1, 'hours');
 
-        const isAvailable = availability.length > 0 ? false : true;
+        console.log(requestedDate, start, end);
+
+        const scheduled = await agendaModel.find({
+            sellerId, commitments: {
+                $elemMatch: {
+                    date: {
+                        $gte: start,
+                        $lte: end
+                    }
+                }
+            }
+        });
+
+        const isAvailable = scheduled.length > 0 ? false : true;
 
         return {
-            availability,
+            scheduled,
             isAvailable
         };
 
     } catch (error) {
 
         console.log(error);
-        throw new Error(`Could not retrieve availability for ${id}`);
+        throw new Error(`Could not retrieve availability for ${sellerId} : ${error}`);
     }
 }
 

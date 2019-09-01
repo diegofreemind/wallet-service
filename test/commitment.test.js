@@ -1,4 +1,4 @@
-
+const moment = require('moment-timezone');
 const { Document } = require('mongoose');
 const { mockEvent } = require('./mocks');
 const { connectToDataStore, clearDataStore, disconnectFromDataStore } = require('./utils');
@@ -9,19 +9,17 @@ describe('Should schedule an event into customer agenda', () => {
 
     beforeAll(async () => {
         await connectToDataStore();
-    })
-
-    beforeEach(async () => {
-        await createEventInAgenda(mockEvent);
     });
 
-    afterEach(async () => {
+    beforeEach(async () => {
+
         await clearDataStore();
+        await createEventInAgenda(mockEvent);
     });
 
     afterAll(async () => {
         await disconnectFromDataStore();
-    })
+    });
 
     it('Should create an event in agenda when receiving a schedule payload', async () => {
 
@@ -30,14 +28,18 @@ describe('Should schedule an event into customer agenda', () => {
             .toBeInstanceOf(Document);
     });
 
-    it('Should retrieve an available time in agenda when receive a valid user id and date / time', async () => {
+    it('Should retrieve an available time in agenda when receive a valid customerId, sellerId and date', async () => {
 
-        const id = 12;
-        const date = new Date();
+        const sellerId = 'sellerid1234';
+        const customerId = 'customer1234';
+        const date = moment.tz('2019-09-01T15:30:00', 'America/Recife');
 
-        await expect(getAvailability(id, date))
+        await expect(getAvailability(sellerId, customerId, date))
             .resolves
-            .toBeInstanceOf(Array);
+            .toMatchObject({
+                scheduled: [],
+                isAvailable: true
+            });
 
     });
 

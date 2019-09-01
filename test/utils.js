@@ -4,29 +4,18 @@ const agendaModel = require('../components/Agenda/AgendaModel');
 const { mongo_host } = require('../components/_config/env');
 
 async function clearDataStore() {
-    try {
-        agendaModel.deleteMany({}, (err) => {
-            if (err) {
-                console.log('Could not drop collection');
-            }
-        });
 
-        return;
-    } catch (error) {
-        throw new Error('Could not destroy database');
-    }
+    return agendaModel.deleteMany();
 }
 
-async function connectToDataStore() {
+function connectToDataStore() {
 
-    await connect(mongo_host, { useNewUrlParser: true });
-    return;
+    return connect(mongo_host, { useNewUrlParser: true });
 }
 
-async function disconnectFromDataStore() {
+function disconnectFromDataStore() {
 
-    await connection.close();
-    return;
+    return connection.close();
 }
 
 module.exports = {

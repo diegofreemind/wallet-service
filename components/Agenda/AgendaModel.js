@@ -8,7 +8,7 @@ const commitmentSchema = new Schema({
     customerName: String,
     date: {
         type: Date,
-        //apply default date format dd/mm/yyyy | hh:mm
+        required: true
     }
 },
     {
