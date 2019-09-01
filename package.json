@@ -1,0 +1,8 @@
+{
+  "name": "wallet-service",
+  "version": "1.0.0",
+  "description": "manages seller's wallet",
+  "main": "index.js",
+  "author": "Vitor Diego",
+  "license": "MIT"
+}
