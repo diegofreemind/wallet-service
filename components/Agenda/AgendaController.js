@@ -27,7 +27,6 @@ async function createEventInAgenda(event) {
 
     } catch (error) {
 
-        console.log(error);
         throw new Error(`Error creating event : ${error}`);
     }
 }
@@ -42,7 +41,7 @@ async function getAvailability(sellerId, requestedDate) {
         const range_end = moment(requestedDate).add(1, 'hours').format();
 
         const busySlot = await agendaModel.findOne({
-            sellerId, commitments: {
+            sellerId, week_events: {
                 $elemMatch: {
                     date: {
                         $gte: range_start,

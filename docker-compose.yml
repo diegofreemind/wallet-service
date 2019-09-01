@@ -1,0 +1,19 @@
+version: "2"
+services:
+  payment:
+    container_name: wallet
+    restart: always
+    build: .
+    ports:
+      - "8080:8080"
+    links:
+      - mongo
+    depends_on:
+    - mongo
+  mongo:
+    container_name: mongo
+    image: mongo
+    volumes:
+      - ./wallet:/db
+    ports:
+      - "27017:27017"

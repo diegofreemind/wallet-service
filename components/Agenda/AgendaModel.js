@@ -6,6 +6,11 @@ const commitmentSchema = new Schema({
         required: true
     },
     customerName: String,
+    status: {
+        type: String,
+        required: true,
+        enum: ['completed', 'rescheduled', 'cancelled']
+    },
     date: String
 },
     {
@@ -13,13 +18,18 @@ const commitmentSchema = new Schema({
     });
 
 const agendaSchema = new Schema({
-    commitments: [
+    week_events: [
         {
             required: false,
             type: commitmentSchema
         }
     ],
-    sellerId: String
+    sellerId: String,
+    wallet_status: {
+        type: String,
+        required: true,
+        enum: ['open', 'closed']
+    }
 });
 
 

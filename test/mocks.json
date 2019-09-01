@@ -1,12 +1,25 @@
 {
-    "mockEvent": {
-        "commitments": [
+    "mockEventMissStatus": {
+        "week_events": [
             {
                 "customerId": 3,
                 "customerName": "PEPSICO",
+                "status": "completed",
                 "date": "2019-09-01T16:30:00-03:00"
             }
         ],
         "sellerId": "sellerid1234"
+    },
+    "mockEvent": {
+        "week_events": [
+            {
+                "customerId": 3,
+                "status": "completed",
+                "customerName": "PEPSICO",
+                "date": "2019-09-01T16:30:00-03:00"
+            }
+        ],
+        "sellerId": "sellerid1234",
+        "wallet_status": "open"
     }
 }
