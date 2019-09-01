@@ -6,10 +6,7 @@ const commitmentSchema = new Schema({
         required: true
     },
     customerName: String,
-    date: {
-        type: Date,
-        required: true
-    }
+    date: String
 },
     {
         timestamps: true
@@ -23,10 +20,7 @@ const agendaSchema = new Schema({
         }
     ],
     sellerId: String
-},
-    {
-        timestamps: true
-    });
+});
 
 
 const agendaModel = model('Agenda', agendaSchema);

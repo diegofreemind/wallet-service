@@ -4,7 +4,7 @@
             {
                 "customerId": 3,
                 "customerName": "PEPSICO",
-                "date": "2019-09-01T16:30:00"
+                "date": "2019-09-01T16:30:00-03:00"
             }
         ],
         "sellerId": "sellerid1234"

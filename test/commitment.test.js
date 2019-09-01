@@ -8,13 +8,13 @@ const { getAvailability, createEventInAgenda } = require('../components/Agenda')
 describe('Should schedule an event into customer agenda', () => {
 
     beforeAll(async () => {
+
         await connectToDataStore();
     });
 
     beforeEach(async () => {
 
         await clearDataStore();
-        await createEventInAgenda(mockEvent);
     });
 
     afterAll(async () => {
@@ -28,18 +28,33 @@ describe('Should schedule an event into customer agenda', () => {
             .toBeInstanceOf(Document);
     });
 
-    it('Should retrieve an available time in agenda when receive a valid customerId, sellerId and date', async () => {
+    it('Should return an available time in agenda when receive a valid sellerId and date', async () => {
 
         const sellerId = 'sellerid1234';
-        const customerId = 'customer1234';
-        const date = moment.tz('2019-09-01T15:30:00', 'America/Recife');
+        const date = moment.tz('2019-09-01T15:15:00-03:00', 'America/Recife');
 
-        await expect(getAvailability(sellerId, customerId, date))
+        await createEventInAgenda(mockEvent);
+
+        await expect(getAvailability(sellerId, date))
             .resolves
             .toMatchObject({
-                scheduled: [],
+                busySlot: null,
                 isAvailable: true
             });
+
+    });
+
+    it('Should return an unavailable time in agenda when receive a valid sellerId and date', async () => {
+
+        const sellerId = 'sellerid1234';
+        const date = moment.tz('2019-09-01T16:30:00-03:00', 'America/Recife');
+
+        await createEventInAgenda(mockEvent);
+
+        const { busySlot, isAvailable } = await getAvailability(sellerId, date);
+
+        expect(busySlot).toBeInstanceOf(Document);
+        expect(isAvailable).toBe(false);
 
     });
 

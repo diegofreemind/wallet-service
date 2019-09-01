@@ -1,5 +1,5 @@
 const agendaModel = require('./AgendaModel');
-const moment = require('moment-timezone');
+const moment = require('moment');
 
 function validate(...args) {
 
@@ -32,32 +32,30 @@ async function createEventInAgenda(event) {
     }
 }
 
-async function getAvailability(sellerId, customerId, requestedDate) {
+async function getAvailability(sellerId, requestedDate) {
 
     try {
 
-        validate({ sellerId, customerId, requestedDate });
+        validate({ sellerId, requestedDate });
 
-        const start = requestedDate.subtract(1, 'hours');
-        const end = requestedDate.add(1, 'hours');
+        const range_start = moment(requestedDate).subtract(1, 'hours').format();
+        const range_end = moment(requestedDate).add(1, 'hours').format();
 
-        console.log(requestedDate, start, end);
-
-        const scheduled = await agendaModel.find({
+        const busySlot = await agendaModel.findOne({
             sellerId, commitments: {
                 $elemMatch: {
                     date: {
-                        $gte: start,
-                        $lte: end
+                        $gte: range_start,
+                        $lte: range_end
                     }
                 }
             }
         });
 
-        const isAvailable = scheduled.length > 0 ? false : true;
+        const isAvailable = busySlot !== null ? false : true;
 
         return {
-            scheduled,
+            busySlot,
             isAvailable
         };
 

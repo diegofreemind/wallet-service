@@ -21,6 +21,8 @@ such client potential, geolocation, follow up meetings, bringing new customers, 
     * Sort customers by indicators
     * Bring strategy keypoints
 
+$ Start weekly agenda as active
+$ Finish weekly agenda setting it to inactive
 
 ## Integrations
 
