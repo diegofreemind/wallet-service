@@ -6,7 +6,7 @@ const { connectToDataStore, clearDataStore, disconnectFromDataStore } = require(
 
 const { getAvailability,scheduleModel  } = require('../components/Schedule');
 
-describe('Should schedule an event into customer agenda', () => {
+describe('Should schedule an event', () => {
 
     beforeAll(async () => {
 
@@ -23,7 +23,7 @@ describe('Should schedule an event into customer agenda', () => {
         await disconnectFromDataStore();
     });
 
-    it('Should create an event in agenda when receiving a valid schedule payload', async () => {
+    it('Should schedule an event when receiving a valid payload', async () => {
 
         const model = new scheduleModel(mockEvent);
 
@@ -40,7 +40,8 @@ describe('Should schedule an event into customer agenda', () => {
             .rejects
             .toThrow();
     });
-
+    
+    //utilities validation - where to put?
     it('Should validate if arguments are not null - void',()=>{
 
         const sellerId = 'sellerid1234';
@@ -51,7 +52,8 @@ describe('Should schedule an event into customer agenda', () => {
         
     });
 
-    it('Should return availability as true in agenda when receive a valid sellerId and date not already scheduled', async () => {
+    //return only available | unavailable or + busy doc?
+    it('Should return availability as true in scheduler when receive a valid sellerId and date', async () => {
 
         const sellerId = 'sellerid1234';
         const date = moment.tz('2019-09-01T15:15:00-03:00', 'America/Recife');
@@ -68,7 +70,7 @@ describe('Should schedule an event into customer agenda', () => {
 
     });
 
-    it('Should return availability as false in agenda when receive a valid sellerId and date already scheduled', async () => {
+    it('Should return availability as false in scheduler when receive a valid sellerId and date', async () => {
 
         const sellerId = 'sellerid1234';
         const date = moment.tz('2019-09-01T16:30:00-03:00', 'America/Recife');
