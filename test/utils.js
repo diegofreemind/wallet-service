@@ -1,5 +1,5 @@
 const { connect, connection } = require('mongoose');
-const agendaModel = require('../components/Agenda/AgendaModel');
+const agendaModel = require('../components/Schedule/ScheduleModel');
 
 const { mongo_host } = require('../components/_config/env');
 

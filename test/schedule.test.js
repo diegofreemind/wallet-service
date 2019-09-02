@@ -1,9 +1,10 @@
 const moment = require('moment-timezone');
 const { Document } = require('mongoose');
 const { mockEvent, mockEventMissStatus } = require('./mocks');
+const {checkIsNotNull} = require('../components/shared/validators');
 const { connectToDataStore, clearDataStore, disconnectFromDataStore } = require('./utils');
 
-const { getAvailability, createEventInAgenda } = require('../components/Agenda');
+const { getAvailability,scheduleModel  } = require('../components/Schedule');
 
 describe('Should schedule an event into customer agenda', () => {
 
@@ -24,16 +25,30 @@ describe('Should schedule an event into customer agenda', () => {
 
     it('Should create an event in agenda when receiving a valid schedule payload', async () => {
 
-        await expect(createEventInAgenda(mockEvent))
+        const model = new scheduleModel(mockEvent);
+
+        await expect(model.save())
             .resolves
             .toBeInstanceOf(Document);
     });
 
     it('Should return an error when receiving a schedule payload missing status', async () => {
 
-        await expect(createEventInAgenda(mockEventMissStatus))
+        const model = new scheduleModel(mockEventMissStatus);
+
+        await expect(model.save())
             .rejects
             .toThrow();
+    });
+
+    it('Should validate if arguments are not null - void',()=>{
+
+        const sellerId = 'sellerid1234';
+        const date = moment.tz('2019-09-01T15:15:00-03:00', 'America/Recife');
+
+        expect(checkIsNotNull).toBeInstanceOf(Function);
+        expect(checkIsNotNull({sellerId,date})).toBeTruthy();
+        
     });
 
     it('Should return availability as true in agenda when receive a valid sellerId and date not already scheduled', async () => {
@@ -41,7 +56,8 @@ describe('Should schedule an event into customer agenda', () => {
         const sellerId = 'sellerid1234';
         const date = moment.tz('2019-09-01T15:15:00-03:00', 'America/Recife');
 
-        await createEventInAgenda(mockEvent);
+        const model = new scheduleModel(mockEvent);
+        await model.save();
 
         await expect(getAvailability(sellerId, date))
             .resolves
@@ -57,7 +73,8 @@ describe('Should schedule an event into customer agenda', () => {
         const sellerId = 'sellerid1234';
         const date = moment.tz('2019-09-01T16:30:00-03:00', 'America/Recife');
 
-        await createEventInAgenda(mockEvent);
+        const model = new scheduleModel(mockEvent);
+        await model.save();
 
         const { busySlot, isAvailable } = await getAvailability(sellerId, date);
 

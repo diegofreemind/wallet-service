@@ -1,3 +1,7 @@
-const ScheduleController = require('./ScheduleController');
+const scheduleModel = require('./ScheduleModel');
+const { getAvailability } = require('./ScheduleController');
 
-module.exports = ScheduleController;
+module.exports = {
+    scheduleModel,
+    getAvailability
+};
