@@ -16,7 +16,10 @@ const scheduleSchema = new Schema({
             date: String
         }
     ],
-    sellerId: String,
+    sellerId: {
+        type: String,
+        required: true,
+    },
     wallet_status: {
         type: String,
         required: true,

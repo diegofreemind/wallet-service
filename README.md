@@ -12,8 +12,6 @@ such as client potential, geolocation, follow up meetings, bringing new customer
     * seller availability - ok
     * time constraints ( weekend, commercial, holiday )
     * geolocation
-
-* Agenda 
     * confirmed appointments
     * non confirmed appointments
 
