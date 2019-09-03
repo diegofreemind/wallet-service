@@ -27,7 +27,6 @@ const scheduleSchema = new Schema({
     }
 });
 
-
 const scheduleModel = model('Schedule', scheduleSchema);
 
 module.exports = scheduleModel;

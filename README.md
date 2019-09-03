@@ -19,7 +19,7 @@ such as client potential, geolocation, follow up meetings, bringing new customer
     * Sort customers by indicators
     * Bring strategy keypoints
 
-## Considereations
+## Considerations
 
 * Start weekly agenda as active
 * Daily update the visits as completed, rescheduled or cancelled
