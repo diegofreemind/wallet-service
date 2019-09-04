@@ -4,9 +4,9 @@ const { scheduler, event } = require('./mocks');
 const { checkIsNotNull } = require('../components/shared/validators');
 const { connectToDataStore, clearDataStore, disconnectFromDataStore } = require('./utils');
 
-const { getAvailability, scheduleModel } = require('../components/Schedule');
+const { getAvailability, getScheduler, createScheduler } = require('../components/Schedule');
 
-describe('Should create a new scheduler for week without events', () => {
+describe('Should create a new scheduler for week', () => {
 
     beforeAll(async () => {
 
@@ -26,20 +26,15 @@ describe('Should create a new scheduler for week without events', () => {
 
     it('Should return a new a weekly scheduler as Document', async () => {
 
-        const model = new scheduleModel(scheduler.mockScheduler);
-
-        await expect(model.save())
+        await expect(createScheduler(scheduler.mockScheduler))
             .resolves
             .toBeInstanceOf(Document);
-
     });
-    
+
 
     it('Should throw an error when sellerId is not passed to create a new weekly scheduler', async () => {
 
-        const model = new scheduleModel(scheduler.mockMissSellerId);
-
-        await expect(model.save())
+        await expect(createScheduler(scheduler.mockMissSellerId))
             .rejects
             .toThrow();
     });
@@ -47,11 +42,72 @@ describe('Should create a new scheduler for week without events', () => {
 
     it('Should return an error when receiving a scheduler payload missing status', async () => {
 
-        const model = new scheduleModel(scheduler.mockMissStatus);
-
-        await expect(model.save())
+        await expect(createScheduler(scheduler.mockMissStatus))
             .rejects
             .toThrow();
+    });
+
+});
+
+describe('Should retrieve the weekly scheduler', () => {
+
+    beforeAll(async () => {
+
+        await connectToDataStore();
+    });
+
+    beforeEach(async () => {
+
+        await clearDataStore();
+    });
+
+    afterAll(async () => {
+
+        await disconnectFromDataStore();
+    });
+
+
+    it('Should find the scheduler when receiving a valid seller id', async () => {
+
+   
+
+        const { sellerId } = scheduler.mockScheduler;
+
+        await createScheduler(scheduler.mockScheduler);
+
+        await expect(getScheduler(sellerId))
+            .resolves
+            .toBeInstanceOf(Document);
+
+    });
+
+});
+
+xdescribe('Should update the weekly scheduler', () => {
+
+    beforeAll(async () => {
+
+        await connectToDataStore();
+    });
+
+    beforeEach(async () => {
+
+        await clearDataStore();
+    });
+
+    afterAll(async () => {
+
+        await disconnectFromDataStore();
+    });
+
+
+    it('Should change the scheduler status from `open` to `closed`', async () => {
+
+        const model = new scheduleModel(scheduler.mockScheduler);
+
+        await expect(model.save())
+            .resolves
+            .toBeInstanceOf(Document);
 
     });
 

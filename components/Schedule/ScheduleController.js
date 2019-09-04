@@ -31,11 +31,46 @@ async function getAvailability(sellerId, requestedDate) {
 
     } catch (error) {
 
-        console.log(error);
         throw new Error(`Could not retrieve availability for ${sellerId} : ${error}`);
     }
 }
 
+async function getScheduler(sellerId) {
+
+    try {
+
+        checkIsNotNull({ sellerId });
+
+        const schedule = await scheduleModel.findOne({ sellerId });
+        return schedule;
+
+    } catch (error) {
+
+        throw new Error(`Could not retrieve schedule for ${sellerId} : ${error}`);
+    }
+}
+
+async function createScheduler(payload) {
+
+    try {
+
+        checkIsNotNull({ payload });
+
+        const model = new scheduleModel(payload);
+        const scheduler = await model.save();
+
+        return scheduler;
+
+    } catch (error) {
+
+        throw new Error(`Could not create the scheduler ${payload} : ${error}`);
+    }
+
+
+}
+
 module.exports = {
+    getScheduler,
+    createScheduler,
     getAvailability
 }
