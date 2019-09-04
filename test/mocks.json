@@ -23,6 +23,10 @@
             "sellerId": "7c61deb00a634b45b7bfb1137a0121b9",
             "wallet_status": "open"
         },
+        "mockUpdateStatus":{
+            "sellerId": "7c61deb00a634b45b7bfb1137a0121b9",
+            "wallet_status": "closed"
+        },
         "mockMissSellerId": {
             "week_events": [],
             "wallet_status": "open"

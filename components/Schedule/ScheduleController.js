@@ -52,6 +52,7 @@ async function getScheduler(sellerId) {
 
 async function createScheduler(payload) {
 
+    //missing only one in 'open' rule
     try {
 
         checkIsNotNull({ payload });
@@ -66,11 +67,41 @@ async function createScheduler(payload) {
         throw new Error(`Could not create the scheduler ${payload} : ${error}`);
     }
 
+}
 
+async function updateScheduler(payload) {
+
+    try {
+
+        checkIsNotNull({ payload });
+
+        const { sellerId, wallet_status, week_events } = payload;
+        const updateDoc = week_events ?
+            {
+                $set: {
+                    week_events,
+                    wallet_status
+                }
+            } : {
+                $set: {
+                    wallet_status
+                }
+            }
+
+        const updatedScheduler = await scheduleModel.findOneAndUpdate({ sellerId }, updateDoc, { new: true });
+
+        return updatedScheduler;
+
+    } catch (error) {
+
+        throw new Error(`Could not update the scheduler ${payload} : ${error}`);
+
+    }
 }
 
 module.exports = {
     getScheduler,
+    updateScheduler,
     createScheduler,
     getAvailability
 }

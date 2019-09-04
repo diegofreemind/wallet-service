@@ -2,27 +2,9 @@ const moment = require('moment-timezone');
 const { Document } = require('mongoose');
 const { scheduler, event } = require('./mocks');
 const { checkIsNotNull } = require('../components/shared/validators');
-const { connectToDataStore, clearDataStore, disconnectFromDataStore } = require('./utils');
-
-const { getAvailability, getScheduler, createScheduler } = require('../components/Schedule');
+const { getAvailability, getScheduler, createScheduler, updateScheduler } = require('../components/Schedule');
 
 describe('Should create a new scheduler for week', () => {
-
-    beforeAll(async () => {
-
-        await connectToDataStore();
-    });
-
-    beforeEach(async () => {
-
-        await clearDataStore();
-    });
-
-    afterAll(async () => {
-
-        await disconnectFromDataStore();
-    });
-
 
     it('Should return a new a weekly scheduler as Document', async () => {
 
@@ -51,28 +33,9 @@ describe('Should create a new scheduler for week', () => {
 
 describe('Should retrieve the weekly scheduler', () => {
 
-    beforeAll(async () => {
-
-        await connectToDataStore();
-    });
-
-    beforeEach(async () => {
-
-        await clearDataStore();
-    });
-
-    afterAll(async () => {
-
-        await disconnectFromDataStore();
-    });
-
-
     it('Should find the scheduler when receiving a valid seller id', async () => {
 
-   
-
         const { sellerId } = scheduler.mockScheduler;
-
         await createScheduler(scheduler.mockScheduler);
 
         await expect(getScheduler(sellerId))
@@ -83,52 +46,23 @@ describe('Should retrieve the weekly scheduler', () => {
 
 });
 
-xdescribe('Should update the weekly scheduler', () => {
-
-    beforeAll(async () => {
-
-        await connectToDataStore();
-    });
-
-    beforeEach(async () => {
-
-        await clearDataStore();
-    });
-
-    afterAll(async () => {
-
-        await disconnectFromDataStore();
-    });
+describe('Should update the weekly scheduler', () => {
 
 
-    it('Should change the scheduler status from `open` to `closed`', async () => {
+    it('Should set the scheduler status from `open` to `closed`', async () => {
 
-        const model = new scheduleModel(scheduler.mockScheduler);
-
-        await expect(model.save())
+        await expect(updateScheduler(scheduler.mockUpdateStatus))
             .resolves
-            .toBeInstanceOf(Document);
-
+            .toBeInstanceOf(Document)
+            .toEqual(
+                expect.objectContaining({
+                    status: 'closed'
+                }));
     });
 
 });
 
 xdescribe('Should add events in an existing scheduler', () => {
-
-    beforeAll(async () => {
-
-        await connectToDataStore();
-    });
-
-    beforeEach(async () => {
-
-        await clearDataStore();
-    });
-
-    afterAll(async () => {
-
-        await disconnectFromDataStore();
-    });
 
     it('Should add an event into scheduler when receiving a valid payload', async () => {
 
