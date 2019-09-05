@@ -17,6 +17,9 @@ async function getAvailability(sellerId, requestedDate) {
                     date: {
                         $gte: range_start,
                         $lte: range_end
+                    },
+                    status: {
+                        $ne: 'ontrack'
                     }
                 }
             }
@@ -60,9 +63,9 @@ async function createScheduler(payload) {
 
         checkIsNotNull({ payload });
 
-        const busySlot = await getOpenScheduler(payload.sellerId);
+        const alreadyActive = await getOpenScheduler(payload.sellerId);
 
-        if (busySlot === null) {
+        if (alreadyActive === null) {
 
             const model = new scheduleModel(payload);
             const scheduler = await model.save();
@@ -70,7 +73,7 @@ async function createScheduler(payload) {
             return scheduler;
         }
 
-        throw new Error('Scheduler already opened for the current week');
+        throw new Error(`Scheduler already opened for the current week - planned : ${alreadyActive}`);
 
 
     } catch (error) {
@@ -89,17 +92,20 @@ async function updateScheduler(payload) {
         const { sellerId, wallet_status, week_events } = payload;
         const updateDoc = week_events ?
             {
-                $set: {
-                    week_events,
-                    wallet_status
-                }
-            } : {
-                $set: {
-                    wallet_status
-                }
+                week_events,
+                wallet_status
             }
+            : {
+                wallet_status
+            };
 
-        const updatedScheduler = await scheduleModel.findOneAndUpdate({ sellerId }, updateDoc, { new: true });
+
+        const updatedScheduler = await scheduleModel.findOneAndUpdate(
+            { sellerId },
+            {
+                $set: updateDoc
+            },
+            { new: true });
 
         return updatedScheduler;
 
@@ -116,13 +122,21 @@ async function createEvent(sellerId, payload) {
 
         checkIsNotNull({ payload });
 
-        const newEvent = scheduleModel.findOneAndUpdate({ sellerId }, {
-            $push: {
-                week_events: payload
-            }
-        }, { new: true });
+        const { date } = payload;
+        const { isAvailable, busySlot } = await getAvailability(sellerId, date);
 
-        return newEvent;
+        if (isAvailable) {
+
+            const newEvent = scheduleModel.findOneAndUpdate({ sellerId }, {
+                $push: {
+                    week_events: payload
+                }
+            }, { new: true });
+
+            return newEvent;
+        }
+
+        throw new Error(`Time not available for schedule - planned: ${busySlot}`);
 
     } catch (error) {
 

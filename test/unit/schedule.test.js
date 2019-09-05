@@ -1,20 +1,27 @@
 const moment = require('moment-timezone');
+
+const factory = require("../factories");
 const { Document } = require('mongoose');
-const { scheduler, event } = require('./mocks');
-const { checkIsNotNull } = require('../components/shared/validators');
+const { scheduler, event } = require('../mocks');
+const { checkIsNotNull } = require('../../components/shared/validators');
 
 const {
     getAvailability,
     getOpenScheduler,
     createScheduler,
     updateScheduler,
-    createEvent } = require('../components/Schedule');
+    createEvent } = require('../../components/Schedule');
 
 describe('Should create a new scheduler for week', () => {
 
     it('Should return a new a weekly scheduler as Document', async () => {
 
-        await expect(createScheduler(scheduler.mockScheduler))
+        const weekly_scheduler = await factory.build('Schedule',
+            {
+                week_events: []
+            });
+
+        await expect(createScheduler(weekly_scheduler))
             .resolves
             .toBeInstanceOf(Document);
     });
@@ -22,7 +29,12 @@ describe('Should create a new scheduler for week', () => {
 
     it('Should throw an error when sellerId is not passed to create a new weekly scheduler', async () => {
 
-        await expect(createScheduler(scheduler.mockMissSellerId))
+        const weekly_scheduler = await factory.build('Schedule',
+            {
+                sellerId: null
+            });
+
+        await expect(createScheduler(weekly_scheduler))
             .rejects
             .toThrow();
     });
@@ -30,7 +42,12 @@ describe('Should create a new scheduler for week', () => {
 
     it('Should return an error when receiving a scheduler payload missing status', async () => {
 
-        await expect(createScheduler(scheduler.mockMissStatus))
+        const weekly_scheduler = await factory.build('Schedule',
+            {
+                wallet_status: null
+            });
+
+        await expect(createScheduler(weekly_scheduler))
             .rejects
             .toThrow();
     });
@@ -38,7 +55,6 @@ describe('Should create a new scheduler for week', () => {
 });
 
 describe('Should retrieve the weekly scheduler', () => {
-
 
     it('Should find the an opened scheduler when receiving a valid seller id', async () => {
 

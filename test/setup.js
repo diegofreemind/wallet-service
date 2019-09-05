@@ -1,4 +1,4 @@
-const { connect, connection, disconnect } = require('mongoose');
+const { connect, connection } = require('mongoose');
 const { mongo_host } = require('../components/_config/env');
 require('../components/Schedule/ScheduleModel');
 
@@ -6,7 +6,10 @@ beforeAll(async () => {
 
     try {
 
-        await connect(mongo_host, { useNewUrlParser: true });
+        await connect(mongo_host,
+            {
+                useNewUrlParser: true
+            });
 
     } catch (error) {
 
