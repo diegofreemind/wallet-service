@@ -25,7 +25,8 @@ const scheduleSchema = new Schema({
         required: true,
         enum: ['open', 'closed']
     }
-});
+},
+    { timestamps: true });
 
 const scheduleModel = model('Schedule', scheduleSchema);
 

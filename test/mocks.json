@@ -46,6 +46,24 @@
         "mockMissStatus": {
             "week_events": [],
             "sellerId": "7c61deb00a634b45b7bfb1137a0121b9"
+        },
+        "mockSchedulerWithClosedStatus": {
+            "week_events": [
+                {
+                    "customerId": 3,
+                    "status": "completed",
+                    "customerName": "PEPSICO",
+                    "date": "2019-09-01T16:30:00-03:00"
+                },
+                {
+                    "customerId": 4,
+                    "status": "completed",
+                    "customerName": "Wall Mart",
+                    "date": "2019-09-01T16:30:00-03:00"
+                }
+            ],
+            "sellerId": "7c61deb00a634b45b7bfb1137a0121b9",
+            "wallet_status": "closed"
         }
     }
 }

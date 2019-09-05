@@ -35,13 +35,17 @@ async function getAvailability(sellerId, requestedDate) {
     }
 }
 
-async function getScheduler(sellerId) {
+async function getOpenScheduler(sellerId) {
 
     try {
 
         checkIsNotNull({ sellerId });
 
-        const schedule = await scheduleModel.findOne({ sellerId });
+        const schedule = await scheduleModel.findOne({
+            sellerId,
+            wallet_status: 'open'
+        });
+
         return schedule;
 
     } catch (error) {
@@ -52,15 +56,22 @@ async function getScheduler(sellerId) {
 
 async function createScheduler(payload) {
 
-    //missing only one in 'open' rule
     try {
 
         checkIsNotNull({ payload });
 
-        const model = new scheduleModel(payload);
-        const scheduler = await model.save();
+        const busySlot = await getOpenScheduler(payload.sellerId);
 
-        return scheduler;
+        if (busySlot === null) {
+
+            const model = new scheduleModel(payload);
+            const scheduler = await model.save();
+
+            return scheduler;
+        }
+
+        throw new Error('Scheduler already opened for the current week');
+
 
     } catch (error) {
 
@@ -121,7 +132,7 @@ async function createEvent(sellerId, payload) {
 
 module.exports = {
     createEvent,
-    getScheduler,
+    getOpenScheduler,
     updateScheduler,
     createScheduler,
     getAvailability

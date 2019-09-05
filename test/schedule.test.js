@@ -2,9 +2,10 @@ const moment = require('moment-timezone');
 const { Document } = require('mongoose');
 const { scheduler, event } = require('./mocks');
 const { checkIsNotNull } = require('../components/shared/validators');
+
 const {
     getAvailability,
-    getScheduler,
+    getOpenScheduler,
     createScheduler,
     updateScheduler,
     createEvent } = require('../components/Schedule');
@@ -38,16 +39,30 @@ describe('Should create a new scheduler for week', () => {
 
 describe('Should retrieve the weekly scheduler', () => {
 
-    it('Should find the scheduler when receiving a valid seller id', async () => {
+
+    it('Should find the an opened scheduler when receiving a valid seller id', async () => {
 
         const { sellerId } = scheduler.mockScheduler;
         await expect(createScheduler(scheduler.mockScheduler))
             .resolves
             .toBeInstanceOf(Document);
 
-        await expect(getScheduler(sellerId))
+        await expect(getOpenScheduler(sellerId))
             .resolves
             .toBeInstanceOf(Document);
+
+    });
+
+    it('Should not find any opened scheduler', async () => {
+
+        const { sellerId } = scheduler.mockScheduler;
+        await expect(createScheduler(scheduler.mockSchedulerWithClosedStatus))
+            .resolves
+            .toBeInstanceOf(Document);
+
+        await expect(getOpenScheduler(sellerId))
+            .resolves
+            .toBe(null);
 
     });
 
