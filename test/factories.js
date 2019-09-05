@@ -1,7 +1,7 @@
 const faker = require("faker");
 const moment = require('moment-timezone');
 const { factory } = require("factory-girl");
-const scheduleModel = require('../components/Schedule/ScheduleModel');
+const scheduleModel = require('../components/Scheduler/SchedulerModel');
 
 faker.locale = "pt_BR";
 

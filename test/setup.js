@@ -1,6 +1,6 @@
 const { connect, connection } = require('mongoose');
 const { mongo_host } = require('../components/_config/env');
-require('../components/Schedule/ScheduleModel');
+require('../components/Scheduler/SchedulerModel');
 
 beforeAll(async () => {
 

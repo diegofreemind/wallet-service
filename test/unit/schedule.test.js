@@ -1,15 +1,14 @@
 const factory = require("../factories");
 const { Document } = require('mongoose');
 const moment = require('moment-timezone');
-const { scheduler, event } = require('../mocks');
 const { checkIsNotNull } = require('../../components/shared/validators');
 
 const {
     getAvailability,
     getOpenScheduler,
     createScheduler,
-    updateScheduler,
-    createEvent } = require('../../components/Schedule');
+    updateOpenScheduler,
+    createEvent } = require('../../components/Scheduler');
 
 describe('Should create a new scheduler for week', () => {
 
@@ -93,7 +92,7 @@ describe('Should retrieve the weekly scheduler', () => {
 
 describe('Should update the weekly scheduler', () => {
 
-    it('Should set the scheduler status from `open` to `closed`', async () => {
+    it.skip('Should set the scheduler status from `open` to `closed`', async () => {
 
         const weekly_scheduler = await factory.build('Schedule',
             {
@@ -104,7 +103,8 @@ describe('Should update the weekly scheduler', () => {
             .resolves
             .toBeInstanceOf(Document);
 
-        await expect(updateScheduler(weekly_scheduler))
+        //move to closeScheduler
+        await expect(updateOpenScheduler(weekly_scheduler))
             .resolves
             .toBeInstanceOf(Document);
     });
@@ -173,4 +173,5 @@ describe('Should validate the format for scheduler', () => {
 
     });
 
-})
+});
+
