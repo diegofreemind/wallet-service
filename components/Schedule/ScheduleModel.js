@@ -11,6 +11,7 @@ const scheduleSchema = new Schema({
             status: {
                 type: String,
                 required: true,
+                default: 'ontrack',
                 enum: ['completed', 'rescheduled', 'cancelled', 'ontrack']
             },
             date: String

@@ -1,7 +1,6 @@
-const moment = require('moment-timezone');
-
 const factory = require("../factories");
 const { Document } = require('mongoose');
+const moment = require('moment-timezone');
 const { scheduler, event } = require('../mocks');
 const { checkIsNotNull } = require('../../components/shared/validators');
 
@@ -56,12 +55,14 @@ describe('Should create a new scheduler for week', () => {
 
 describe('Should retrieve the weekly scheduler', () => {
 
-    it('Should find the an opened scheduler when receiving a valid seller id', async () => {
+    it('Should find an opened scheduler when receiving a valid seller id', async () => {
 
-        const { sellerId } = scheduler.mockScheduler;
-        await expect(createScheduler(scheduler.mockScheduler))
+        const weekly_scheduler = await factory.build('Schedule');
+        await expect(createScheduler(weekly_scheduler))
             .resolves
             .toBeInstanceOf(Document);
+
+        const { sellerId } = weekly_scheduler;
 
         await expect(getOpenScheduler(sellerId))
             .resolves
@@ -69,12 +70,18 @@ describe('Should retrieve the weekly scheduler', () => {
 
     });
 
-    it('Should not find any opened scheduler', async () => {
+    it('Should not find any opened scheduler as the current scheduler status is closed', async () => {
 
-        const { sellerId } = scheduler.mockScheduler;
-        await expect(createScheduler(scheduler.mockSchedulerWithClosedStatus))
+        const weekly_scheduler = await factory.build('Schedule',
+            {
+                wallet_status: 'closed'
+            });
+
+        await expect(createScheduler(weekly_scheduler))
             .resolves
             .toBeInstanceOf(Document);
+
+        const { sellerId } = weekly_scheduler;
 
         await expect(getOpenScheduler(sellerId))
             .resolves
@@ -88,11 +95,16 @@ describe('Should update the weekly scheduler', () => {
 
     it('Should set the scheduler status from `open` to `closed`', async () => {
 
-        await expect(createScheduler(scheduler.mockScheduler))
+        const weekly_scheduler = await factory.build('Schedule',
+            {
+                wallet_status: 'closed'
+            });
+
+        await expect(createScheduler(weekly_scheduler))
             .resolves
             .toBeInstanceOf(Document);
 
-        await expect(updateScheduler(scheduler.mockUpdateStatus))
+        await expect(updateScheduler(weekly_scheduler))
             .resolves
             .toBeInstanceOf(Document);
     });
@@ -103,17 +115,7 @@ describe('Should add events to an existing scheduler', () => {
 
     beforeEach(async () => {
 
-        await createScheduler(scheduler.mockScheduler);
-
-    });
-
-    it('Should add an event into scheduler when receiving a valid payload', async () => {
-
-        const sellerId = '7c61deb00a634b45b7bfb1137a0121b9';
-
-        await expect(createEvent(sellerId, event.mockEvent))
-            .resolves
-            .toBeInstanceOf(Document);
+        await factory.create('Schedule', { week_events: [] });
 
     });
 
@@ -125,6 +127,17 @@ describe('Should add events to an existing scheduler', () => {
 
         expect(checkIsNotNull).toBeInstanceOf(Function);
         expect(checkIsNotNull({ sellerId, date })).toBeTruthy();
+
+    });
+
+    it('Should add an event into scheduler when receiving a valid payload', async () => {
+
+        const { sellerId, week_events } = await factory.build('Schedule');
+        const [event] = week_events;
+
+        await expect(createEvent(sellerId, event))
+            .resolves
+            .toBeInstanceOf(Document);
 
     });
 
