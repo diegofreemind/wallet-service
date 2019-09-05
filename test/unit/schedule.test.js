@@ -115,25 +115,18 @@ describe('Should add events to an existing scheduler', () => {
 
     beforeEach(async () => {
 
-        await factory.create('Schedule', { week_events: [] });
-
-    });
-
-    //utilities validation - where to put?
-    it('Should validate if arguments are not null - void', () => {
-
-        const sellerId = '7c61deb00a634b45b7bfb1137a0121b9';
-        const date = moment.tz('2019-09-01T15:15:00-03:00', 'America/Recife');
-
-        expect(checkIsNotNull).toBeInstanceOf(Function);
-        expect(checkIsNotNull({ sellerId, date })).toBeTruthy();
+        await factory.create('Schedule', {
+            week_events: []
+        });
 
     });
 
     it('Should add an event into scheduler when receiving a valid payload', async () => {
 
-        const { sellerId, week_events } = await factory.build('Schedule');
+        const { sellerId, week_events } = await factory.attrs('Schedule');
         const [event] = week_events;
+
+        event.date = moment.tz('2019-09-01T14:15:00-03:00', 'America/Recife');
 
         await expect(createEvent(sellerId, event))
             .resolves
@@ -141,10 +134,9 @@ describe('Should add events to an existing scheduler', () => {
 
     });
 
-    //return only available | unavailable or + busy doc?
-    it('Should return availability as true in scheduler when receive a valid sellerId and date', async () => {
+    it('Should return availability as true in scheduler when find a free slot', async () => {
 
-        const sellerId = '7c61deb00a634b45b7bfb1137a0121b9';
+        const { sellerId } = await factory.attrs('Schedule');
         const date = moment.tz('2019-09-01T15:15:00-03:00', 'America/Recife');
 
         await expect(getAvailability(sellerId, date))
@@ -156,14 +148,10 @@ describe('Should add events to an existing scheduler', () => {
 
     });
 
-    it('Should return availability as false in scheduler when receive a valid sellerId and date', async () => {
+    it('Should return availability as false in scheduler when find a busy slot', async () => {
 
-        const sellerId = '7c61deb00a634b45b7bfb1137a0121b9';
-        const date = moment.tz('2019-09-01T16:30:00-03:00', 'America/Recife');
-
-        await expect(createScheduler(scheduler.mockSchedulerWithEvent))
-            .resolves
-            .toBeInstanceOf(Document);
+        const { sellerId } = await factory.create('Schedule');
+        const date = moment.tz('2019-09-01T17:30:00-03:00', 'America/Recife');
 
         const { busySlot, isAvailable } = await getAvailability(sellerId, date);
 
@@ -171,4 +159,18 @@ describe('Should add events to an existing scheduler', () => {
         expect(isAvailable).toBe(false);
 
     });
+});
+
+describe('Should validate the format for scheduler', () => {
+
+    it('checkIsNotNull: Should validate if arguments are not null', async () => {
+
+        const { sellerId } = await factory.create('Schedule');
+        const date = moment.tz('2019-09-01T15:15:00-03:00', 'America/Recife');
+
+        expect(checkIsNotNull).toBeInstanceOf(Function);
+        expect(checkIsNotNull({ sellerId, date })).toBeTruthy();
+
+    });
+
 })

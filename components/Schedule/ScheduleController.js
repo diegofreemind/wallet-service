@@ -19,7 +19,7 @@ async function getAvailability(sellerId, requestedDate) {
                         $lte: range_end
                     },
                     status: {
-                        $ne: 'ontrack'
+                        $eq: 'ontrack'
                     }
                 }
             }
