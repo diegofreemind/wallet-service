@@ -2,38 +2,50 @@ const { connect, connection, disconnect } = require('mongoose');
 const { mongo_host } = require('../components/_config/env');
 require('../components/Schedule/ScheduleModel');
 
-beforeEach(function (done) {
-    /*
-      Define clearDB function that will loop through all 
-      the collections in our mongoose connection and drop them.
-    */
-    function clearDB() {
-        for (var i in connection.collections) {
-            connection.collections[i].remove(function () { });
+beforeAll(async () => {
+
+    try {
+
+        await connect(mongo_host, { useNewUrlParser: true });
+
+    } catch (error) {
+
+        throw error;
+    }
+
+});
+
+beforeEach(async () => {
+
+    const collections = Object.keys(connection.collections);
+    for (const collectionName of collections) {
+
+        const collection = connection.collections[collectionName]
+        await collection.deleteMany();
+    }
+});
+
+async function dropAllCollections() {
+    const collections = Object.keys(connection.collections)
+    for (const collectionName of collections) {
+        const collection = connection.collections[collectionName];
+        try {
+            await collection.drop();
+        } catch (error) {
+            // This error happens when you try to drop a collection that's already dropped. Happens infrequently. 
+            // Safe to ignore. 
+            if (error.message === 'ns not found') return
+
+            // This error happens when you use it.todo.
+            // Safe to ignore. 
+            if (error.message.includes('a background operation is currently running')) return
+
+            console.log(error.message)
         }
-        return done();
     }
+}
 
-    if (connection.readyState === 0) {
-        connect(
-            mongo_host,
-            function (err) {
-                if (err) {
-                    throw err;
-                }
-                return clearDB();
-            }
-        );
-    } else {
-        return clearDB();
-    }
-});
-
-afterEach(function (done) {
-    disconnect();
-    return done();
-});
-
-afterAll(done => {
-    return done();
+afterAll(async () => {
+    await dropAllCollections();
+    await connection.close()
 });

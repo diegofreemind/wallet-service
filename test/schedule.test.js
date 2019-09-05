@@ -2,7 +2,12 @@ const moment = require('moment-timezone');
 const { Document } = require('mongoose');
 const { scheduler, event } = require('./mocks');
 const { checkIsNotNull } = require('../components/shared/validators');
-const { getAvailability, getScheduler, createScheduler, updateScheduler } = require('../components/Schedule');
+const {
+    getAvailability,
+    getScheduler,
+    createScheduler,
+    updateScheduler,
+    createEvent } = require('../components/Schedule');
 
 describe('Should create a new scheduler for week', () => {
 
@@ -36,7 +41,9 @@ describe('Should retrieve the weekly scheduler', () => {
     it('Should find the scheduler when receiving a valid seller id', async () => {
 
         const { sellerId } = scheduler.mockScheduler;
-        await createScheduler(scheduler.mockScheduler);
+        await expect(createScheduler(scheduler.mockScheduler))
+            .resolves
+            .toBeInstanceOf(Document);
 
         await expect(getScheduler(sellerId))
             .resolves
@@ -48,30 +55,35 @@ describe('Should retrieve the weekly scheduler', () => {
 
 describe('Should update the weekly scheduler', () => {
 
-
     it('Should set the scheduler status from `open` to `closed`', async () => {
+
+        await expect(createScheduler(scheduler.mockScheduler))
+            .resolves
+            .toBeInstanceOf(Document);
 
         await expect(updateScheduler(scheduler.mockUpdateStatus))
             .resolves
-            .toBeInstanceOf(Document)
-            .toEqual(
-                expect.objectContaining({
-                    status: 'closed'
-                }));
+            .toBeInstanceOf(Document);
     });
 
 });
 
-xdescribe('Should add events in an existing scheduler', () => {
+describe('Should add events to an existing scheduler', () => {
+
+    beforeEach(async () => {
+
+        await createScheduler(scheduler.mockScheduler);
+
+    });
 
     it('Should add an event into scheduler when receiving a valid payload', async () => {
 
-        //update
-        const model = new scheduleModel(mockEvent);
+        const sellerId = '7c61deb00a634b45b7bfb1137a0121b9';
 
-        await expect(model.save())
+        await expect(createEvent(sellerId, event.mockEvent))
             .resolves
             .toBeInstanceOf(Document);
+
     });
 
     //utilities validation - where to put?
@@ -91,9 +103,6 @@ xdescribe('Should add events in an existing scheduler', () => {
         const sellerId = '7c61deb00a634b45b7bfb1137a0121b9';
         const date = moment.tz('2019-09-01T15:15:00-03:00', 'America/Recife');
 
-        const model = new scheduleModel(mockEvent);
-        await model.save();
-
         await expect(getAvailability(sellerId, date))
             .resolves
             .toMatchObject({
@@ -108,8 +117,9 @@ xdescribe('Should add events in an existing scheduler', () => {
         const sellerId = '7c61deb00a634b45b7bfb1137a0121b9';
         const date = moment.tz('2019-09-01T16:30:00-03:00', 'America/Recife');
 
-        const model = new scheduleModel(mockEvent);
-        await model.save();
+        await expect(createScheduler(scheduler.mockSchedulerWithEvent))
+            .resolves
+            .toBeInstanceOf(Document);
 
         const { busySlot, isAvailable } = await getAvailability(sellerId, date);
 

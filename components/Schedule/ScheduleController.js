@@ -99,7 +99,28 @@ async function updateScheduler(payload) {
     }
 }
 
+async function createEvent(sellerId, payload) {
+
+    try {
+
+        checkIsNotNull({ payload });
+
+        const newEvent = scheduleModel.findOneAndUpdate({ sellerId }, {
+            $push: {
+                week_events: payload
+            }
+        }, { new: true });
+
+        return newEvent;
+
+    } catch (error) {
+
+        throw new Error(`Could not create event ${payload} : ${error}`);
+    }
+}
+
 module.exports = {
+    createEvent,
     getScheduler,
     updateScheduler,
     createScheduler,
