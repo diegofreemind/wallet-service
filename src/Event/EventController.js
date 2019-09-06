@@ -33,8 +33,6 @@ async function createEvent(sellerId, payload) {
                 return newEvent;
             }
 
-            throw new Error(`Scheduler not found: ${sellerId}`);
-
         }
 
         throw new Error(`Time not available for schedule - planned: ${busySlot}`);
@@ -68,11 +66,14 @@ async function bulkEvents(payload) {
                 new: true
             });
 
-        return updatedScheduler;
+        if (updatedScheduler) {
+
+            return updatedScheduler;
+        }
 
     } catch (error) {
 
-        throw new Error(`Could not update the scheduler ${payload} : ${error}`);
+        throw new Error(`Could not add events ${payload} : ${error}`);
 
     }
 }
@@ -104,7 +105,52 @@ async function getEvent(sellerId, eventId) {
 
 }
 
-async function updateEvent() { }
+async function updateEvent(sellerId, payload) {
+
+    try {
+
+        checkIsNotNull({ sellerId, payload });
+
+        const { _id, customerId, customerName, status, date } = payload;
+
+        const { week_events } = await walletModel.findOneAndUpdate(
+            {
+                sellerId,
+                wallet_status: 'open',
+                week_events: {
+                    $elemMatch: {
+                        _id
+                    }
+                }
+            },
+            {
+                $set: {
+                    'week_events.$': {
+                        customerId,
+                        customerName,
+                        status,
+                        date
+                    }
+                }
+
+            },
+            {
+                new: true
+            });
+
+        if (week_events) {
+
+            const event = week_events.find(item => item._id == _id);
+
+            return event;
+        }
+
+    } catch (error) {
+
+        throw new Error(`Could not update the event ${payload} : ${error}`);
+
+    }
+}
 
 async function deleteEvent() { }
 

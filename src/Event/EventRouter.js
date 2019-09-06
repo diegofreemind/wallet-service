@@ -33,7 +33,7 @@ router.get('/event', (req, res, next) => {
         .catch(next);
 });
 
-router.put('/event', (req, res, next) => {
+router.put('/event/:id', (req, res, next) => {
 
     const errors = validationResult(req);
 
@@ -42,7 +42,7 @@ router.put('/event', (req, res, next) => {
         return;
     }
 
-    controller.updateEvent()
+    controller.updateEvent(req.params.id, req.body)
         .then(openedScheduler => {
 
             res.send(openedScheduler);
