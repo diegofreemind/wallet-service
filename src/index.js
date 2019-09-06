@@ -1,3 +1,4 @@
+const passport = require('passport');
 const express = require('express');
 const mongoose = require('mongoose');
 const config = require('./_config/env');
@@ -9,6 +10,8 @@ const eventRouter = require('./Event/EventRouter');
 const app = express();
 app.use(express.json());
 app.use(logger);
+
+app.use(passport.initialize());
 
 app.use('/api', scheduleRouter);
 app.use('/api', eventRouter);
