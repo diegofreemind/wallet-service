@@ -163,12 +163,36 @@ async function bulkEvents(payload) {
     }
 }
 
+async function getEvent(sellerId, eventId) {
+
+    try {
+
+        checkIsNotNull({ sellerId, eventId });
+
+        const { week_events } = await scheduleModel.findOne(
+            {
+                sellerId,
+                week_events: {
+                    $elemMatch: {
+                        _id: eventId
+                    }
+                }
+            });
+
+        const event = week_events.find(item => item._id == eventId);
+        return event;
+
+    } catch (error) {
+
+        throw new Error(`Could not find the event ${eventId} : ${error}`);
+
+    }
+
+}
+
 // async function updateEvent() { }
 
 // async function deleteEvent() { }
-
-// async function getEvent() { }
-
 
 //============== helpers ========================
 
@@ -209,6 +233,7 @@ async function getAvailability(sellerId, requestedDate) {
 }
 
 module.exports = {
+    getEvent,
     bulkEvents,
     createEvent,
     closeScheduler,

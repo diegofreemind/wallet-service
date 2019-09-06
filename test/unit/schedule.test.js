@@ -1,9 +1,11 @@
+const faker = require("faker");
 const factory = require("../factories");
 const { Document } = require('mongoose');
 const moment = require('moment-timezone');
 const { checkIsNotNull } = require('../../components/shared/validators');
 
 const {
+    getEvent,
     bulkEvents,
     getAvailability,
     getOpenScheduler,
@@ -119,7 +121,7 @@ describe('Should update the weekly scheduler', () => {
 
 describe('Should delete a scheduler', () => {
 
-    it('Should remove the scheduler when receiving a valid ObjectId', async () => {
+    it('Should remove the scheduler when receiving a valid Document id', async () => {
 
         const payload = await factory.build('Schedule');
         const scheduler = await createScheduler(payload);
@@ -142,19 +144,17 @@ describe('Should delete a scheduler', () => {
 
 });
 
-describe('Should add events to an existing scheduler', () => {
+describe('Should manage events in an opened scheduler', () => {
 
-    beforeEach(async () => {
-
-        await factory.create('Schedule', {
-            week_events: []
-        });
-
-    });
 
     it('Should add an event into scheduler when receiving a valid payload', async () => {
 
-        const { sellerId, week_events } = await factory.attrs('Schedule');
+        const { week_events } = await factory.attrs('Schedule');
+        const { sellerId } = await factory.create('Schedule',
+            {
+                week_events: []
+            });
+
         const [event] = week_events;
 
         event.date = moment.tz('2019-09-01T14:15:00-03:00', 'America/Recife');
@@ -168,13 +168,48 @@ describe('Should add events to an existing scheduler', () => {
 
     it('Should add events into scheduler when receiving a valid payload', async () => {
 
-        const payload = await factory.attrs('Schedule');
+        const { sellerId } = await factory.create('Schedule', {
+            week_events: []
+        });
+
+        const payload = await factory.attrs('Schedule', {
+            sellerId,
+            week_events: [
+                {
+                    customerId: faker.random.uuid(),
+                    status: "ontrack",
+                    customerName: faker.company.companyName(),
+                    date: "2019-09-02T17:30:00-03:00"
+                },
+                {
+                    customerId: faker.random.uuid(),
+                    status: "completed",
+                    customerName: faker.company.companyName(),
+                    date: "2019-09-02T11:30:00-03:00"
+                }
+            ]
+        });
 
         const { week_events } = await bulkEvents(payload)
         await expect(week_events)
-            .toHaveLength(4);
+            .toHaveLength(2);
 
     });
+
+
+    it('Should find an event when receiving a valid Document id', async () => {
+
+        const { week_events, sellerId } = await factory.create('Schedule');
+        const [event] = week_events;
+
+        const { id } = event;
+
+        await expect(getEvent(sellerId, id))
+            .resolves
+            .toBeInstanceOf(Object);
+
+    });
+
 
     it('Should return availability as true in scheduler when find a free slot', async () => {
 
@@ -189,6 +224,7 @@ describe('Should add events to an existing scheduler', () => {
             });
 
     });
+
 
     it('Should return availability as false in scheduler when find a busy slot', async () => {
 
