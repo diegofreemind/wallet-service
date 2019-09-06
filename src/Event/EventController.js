@@ -14,9 +14,10 @@ async function createEvent(sellerId, payload) {
 
         if (isAvailable) {
 
-            const newEvent = walletModel.findOneAndUpdate(
+            const newEvent = await walletModel.findOneAndUpdate(
                 {
-                    sellerId
+                    sellerId,
+                    wallet_status: 'open'
                 },
                 {
                     $push: {
@@ -28,7 +29,12 @@ async function createEvent(sellerId, payload) {
                     new: true
                 });
 
-            return newEvent;
+            if (newEvent) {
+                return newEvent;
+            }
+
+            throw new Error(`Scheduler not found: ${sellerId}`);
+
         }
 
         throw new Error(`Time not available for schedule - planned: ${busySlot}`);

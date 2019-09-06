@@ -1,3 +1,5 @@
+const { check } = require('express-validator');
+
 function checkIsNotNull(...args) {
 
     args.forEach(param => {
@@ -13,6 +15,30 @@ function checkIsNotNull(...args) {
     return true;
 }
 
+const schedulerPayload = [
+    check('sellerId', 'sellerId not defined').exists().isString(),
+    check('week_events', 'week_events not defined').exists().isArray(),
+    check('wallet_status', 'wallet_status not defined').exists().isString(),
+];
+
+const eventPayload = [
+    check('date', 'date not defined').exists().isString(),
+    check('status', 'status not defined').exists().isString(),
+    check('customerId', 'customerId not defined or wrong type').exists().isMongoId(),
+    check('customerName', 'customerName not defined').exists().isString(),
+]
+
+function validationErrorHandler(errors) {
+
+    return {
+        status: 422,
+        message: errors.array()
+    }
+}
+
 module.exports = {
-    checkIsNotNull
+    eventPayload,
+    checkIsNotNull,
+    schedulerPayload,
+    validationErrorHandler
 }

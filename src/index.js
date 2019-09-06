@@ -13,16 +13,25 @@ app.use(logger);
 app.use('/api', scheduleRouter);
 app.use('/api', eventRouter);
 
-mongoose.connect(config.mongo_host, config.mongo_extras);
+try {
 
-const db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error:'))
-db.once('open', console.log.bind(console, 'Mongo ready'))
+    mongoose.connect(config.mongo_host, config.mongo_extras);
+
+    const db = mongoose.connection;
+    db.on('error', console.error.bind(console, 'connection error:'))
+    db.once('open', console.log.bind(console, 'Mongo ready'))
+
+} catch (error) {
+
+    console.log(error);
+    process.exit(1);
+}
+
 
 app.use((err, req, res) => {
 
-    res.status(500)
-        .send(err)
+    res.status(err.status)
+        .send(err.message)
 });
 
 module.exports = app;

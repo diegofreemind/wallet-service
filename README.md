@@ -5,44 +5,6 @@
 Sellers need a way to organize their appointments based on business rules
 such as client potential, geolocation, follow up meetings, bringing new customers, etc.
 
-## Key points
-
-* Scheduling
-    * customer availability
-    * seller availability - ok
-    * time constraints ( weekend, commercial, holiday )
-    * geolocation
-    * confirmed appointments
-    * non confirmed appointments
-
-* Ranking
-    * Sort customers by indicators
-    * Bring strategy keypoints
-
-## Considerations
-
-* Start weekly agenda as active
-* Daily update the visits as completed, rescheduled or cancelled
-* Finish weekly agenda setting it to inactive
-
-## Integrations
-
-* Indicators
-    * Buying's frequency
-    * Percent of profit 
-    * Potential of grow
-    * Rentability x Fidelity
-
-* Customer 
-    * CRUD over Customer -> request to manager evaluation
-
-
-* Strategy - business rules applied herein
-    * balanced commitments ( follow up, new clients )
-    * goals over time 
-
-
-## Test and development 
 
 ### Pre requirements:
 
@@ -51,8 +13,10 @@ such as client potential, geolocation, follow up meetings, bringing new customer
 * NPM or Yarn as package manager
 
 Create a .env file in the project root folder containing the following attributes:
+
 ```
-MONGO_HOST='mongodb://localhost/wallet'
+MONGO_HOST='mongodb://localhost'
+DATABASE='wallet-strategy'
 PORT=8080
 ```
 
@@ -74,3 +38,15 @@ Run the tests
 ``` 
 yarn test
 ```  
+
+## Integrations - roadmap
+
+* Indicators
+    * Buying's frequency
+    * Percent of profit 
+    * Potential of grow
+    * Rentability x Fidelity
+
+* Strategy - business rules applied herein
+    * balanced commitments ( follow up, new clients )
+    * goals over time 

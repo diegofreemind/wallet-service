@@ -1,9 +1,19 @@
 const controller = require('./index');
 
+const { schedulerPayload, validationErrorHandler } = require('../shared/validators/entries');
+const { validationResult } = require('express-validator');
+
 const express = require('express');
 const router = express.Router();
 
-router.post('/scheduler', (req, res, next) => {
+router.post('/scheduler', schedulerPayload, (req, res, next) => {
+
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        next(validationErrorHandler(errors));
+        return;
+    }
 
     controller.createScheduler(req.body)
         .then(newScheduler => {
