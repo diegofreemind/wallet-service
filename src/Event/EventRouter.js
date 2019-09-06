@@ -1,4 +1,5 @@
 const controller = require('./index');
+const { authenticate } = require('../shared/middlewares/auth');
 
 const { eventPayload, validationErrorHandler } = require('../shared/validators/entries');
 const { validationResult } = require('express-validator');
@@ -6,7 +7,7 @@ const { validationResult } = require('express-validator');
 const express = require('express');
 const router = express.Router();
 
-router.post('/event/:id', eventPayload, (req, res, next) => {
+router.post('/event/:id', authenticate(), eventPayload, (req, res, next) => {
 
     const errors = validationResult(req);
 
@@ -23,7 +24,7 @@ router.post('/event/:id', eventPayload, (req, res, next) => {
         .catch(next);
 });
 
-router.get('/event', (req, res, next) => {
+router.get('/event', authenticate(), (req, res, next) => {
 
     controller.getEvent(req.params.id, req.params.event_id)
         .then(openedScheduler => {
@@ -33,7 +34,7 @@ router.get('/event', (req, res, next) => {
         .catch(next);
 });
 
-router.put('/event/:id', (req, res, next) => {
+router.put('/event/:id', authenticate(), (req, res, next) => {
 
     const errors = validationResult(req);
 

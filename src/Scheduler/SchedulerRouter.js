@@ -1,4 +1,5 @@
 const controller = require('./index');
+const { authenticate } = require('../shared/middlewares/auth');
 
 const { schedulerPayload, validationErrorHandler } = require('../shared/validators/entries');
 const { validationResult } = require('express-validator');
@@ -6,7 +7,7 @@ const { validationResult } = require('express-validator');
 const express = require('express');
 const router = express.Router();
 
-router.post('/scheduler', schedulerPayload, (req, res, next) => {
+router.post('/scheduler', authenticate(), schedulerPayload, (req, res, next) => {
 
     const errors = validationResult(req);
 
@@ -23,7 +24,7 @@ router.post('/scheduler', schedulerPayload, (req, res, next) => {
         .catch(next);
 });
 
-router.get('/scheduler/:id', (req, res, next) => {
+router.get('/scheduler/:id', authenticate(), (req, res, next) => {
 
     controller.getOpenScheduler(req.params.id)
         .then(openedScheduler => {
@@ -34,7 +35,7 @@ router.get('/scheduler/:id', (req, res, next) => {
 });
 
 
-router.delete('/scheduler/:_id', (req, res, next) => {
+router.delete('/scheduler/:_id', authenticate(), (req, res, next) => {
 
     controller.deleteScheduler(req.params._id)
         .then(deletedScheduler => {
