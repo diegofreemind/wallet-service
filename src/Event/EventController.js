@@ -140,9 +140,7 @@ async function updateEvent(sellerId, payload) {
 
         if (week_events) {
 
-            const event = week_events.find(item => item._id == _id);
-
-            return event;
+            return week_events;
         }
 
     } catch (error) {
@@ -151,9 +149,6 @@ async function updateEvent(sellerId, payload) {
 
     }
 }
-
-async function deleteEvent() { }
-
 
 async function getAvailability(sellerId, requestedDate) {
 
@@ -194,7 +189,6 @@ async function getAvailability(sellerId, requestedDate) {
 module.exports = {
     getEvent,
     bulkEvents,
-    deleteEvent,
     updateEvent,
     createEvent,
     getAvailability

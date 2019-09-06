@@ -10,7 +10,7 @@ const {
     getAvailability } = require('../../src/Event');
 
 
-xdescribe('Should manage events in an opened scheduler', () => {
+describe('Should manage events in an opened scheduler', () => {
 
 
     it('Should add an event into scheduler when receiving a valid payload', async () => {

@@ -50,14 +50,4 @@ router.put('/event/:id', (req, res, next) => {
         .catch(next);
 });
 
-router.delete('/event', (req, res, next) => {
-
-    controller.deleteEvent()
-        .then(deletedScheduler => {
-
-            res.send(deletedScheduler);
-        })
-        .catch(next);
-});
-
 module.exports = router;

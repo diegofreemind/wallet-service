@@ -9,7 +9,7 @@ such as client potential, geolocation, follow up meetings, bringing new customer
 ### Pre requirements:
 
 * Docker & Docker Composer
-* Nodejs v8.11.3 or higher
+* Nodejs v12.10.0 or higher
 * NPM or Yarn as package manager
 
 Create a .env file in the project root folder containing the following attributes:

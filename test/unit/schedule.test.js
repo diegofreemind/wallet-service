@@ -11,7 +11,7 @@ const {
 } = require('../../src/Scheduler');
 
 
-xdescribe('Should create a new weekly scheduler', () => {
+describe('Should create a new weekly scheduler', () => {
 
     it('Should return a new a weekly scheduler as Document', async () => {
 
@@ -53,7 +53,7 @@ xdescribe('Should create a new weekly scheduler', () => {
 
 });
 
-xdescribe('Should retrieve the weekly scheduler', () => {
+describe('Should retrieve the weekly scheduler', () => {
 
     it('Should find an opened scheduler when receiving a valid seller id', async () => {
 
@@ -83,7 +83,7 @@ xdescribe('Should retrieve the weekly scheduler', () => {
 
 });
 
-xdescribe('Should update the weekly scheduler', () => {
+describe('Should update the weekly scheduler', () => {
 
     beforeEach(async () => {
 
@@ -110,7 +110,7 @@ xdescribe('Should update the weekly scheduler', () => {
 
 });
 
-xdescribe('Should delete a scheduler', () => {
+describe('Should delete a scheduler', () => {
 
     it('Should remove the scheduler when receiving a valid Document id', async () => {
 
@@ -133,7 +133,7 @@ xdescribe('Should delete a scheduler', () => {
 
 });
 
-xdescribe('Should validate the entries format for scheduler', () => {
+describe('Should validate the entries format for scheduler', () => {
 
     it('Should validate if arguments are not null', async () => {
 

@@ -1,10 +1,10 @@
 const { connect, connection } = require('mongoose');
-const { mongo_host } = require('../src/_config/env');
+const { mongo_host, mongo_extras } = require('../src/_config/env');
 require('../src/shared/models/Wallet');
 
 beforeAll(async () => {
 
-    await connect(mongo_host, { useNewUrlParser: true });
+    await connect(`${mongo_host}/${mongo_extras.dbName}`, { useNewUrlParser: true });
 
 });
 
