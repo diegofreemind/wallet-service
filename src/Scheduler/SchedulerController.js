@@ -1,4 +1,4 @@
-const walletModel = require('../shared/models/wallet');
+const walletModel = require('../shared/models/Wallet');
 const { checkIsNotNull } = require('../shared/validators/entries');
 
 async function createScheduler(payload) {

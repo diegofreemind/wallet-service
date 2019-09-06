@@ -1,6 +1,6 @@
 const { connect, connection } = require('mongoose');
 const { mongo_host } = require('../src/_config/env');
-require('../src/shared/models/wallet');
+require('../src/shared/models/Wallet');
 
 beforeAll(async () => {
 

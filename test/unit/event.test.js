@@ -9,7 +9,8 @@ const {
     bulkEvents,
     getAvailability } = require('../../src/Event');
 
-describe('Should manage events in an opened scheduler', () => {
+
+xdescribe('Should manage events in an opened scheduler', () => {
 
 
     it('Should add an event into scheduler when receiving a valid payload', async () => {

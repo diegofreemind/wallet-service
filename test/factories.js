@@ -1,6 +1,6 @@
 const faker = require("faker");
 const { factory } = require("factory-girl");
-const walletModel = require('../src/shared/models/wallet');
+const walletModel = require('../src/shared/models/Wallet');
 
 faker.locale = "pt_BR";
 

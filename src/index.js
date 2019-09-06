@@ -1,5 +1,5 @@
 const express = require('express');
-const logger = require('./middlewares/logger');
+const logger = require('./shared/middlewares/logger');
 
 const scheduleRouter = require('./Scheduler/SchedulerRouter');
 const eventRouter = require('./Event/EventRouter');
@@ -14,7 +14,7 @@ app.use('/api', eventRouter);
 app.use((err, req, res) => {
 
     res.status(500)
-        .send(err.message)
+        .send(err)
 });
 
 module.exports = app;

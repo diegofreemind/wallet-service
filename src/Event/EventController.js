@@ -1,5 +1,5 @@
 const moment = require('moment');
-const walletModel = require('../shared/models/wallet');
+const walletModel = require('../shared/models/Wallet');
 const { checkIsNotNull } = require('../shared/validators/entries');
 
 
