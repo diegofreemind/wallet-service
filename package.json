@@ -13,6 +13,7 @@
     "supertest": "^4.0.2"
   },
   "scripts": {
+    "start": "node src/server",
     "test": "jest",
     "pretest": "eslint --ignore-path .gitignore ."
   },
