@@ -4,9 +4,11 @@ const moment = require('moment-timezone');
 const { checkIsNotNull } = require('../../components/shared/validators');
 
 const {
+    bulkEvents,
     getAvailability,
     getOpenScheduler,
     createScheduler,
+    deleteScheduler,
     closeScheduler,
     createEvent } = require('../../components/Scheduler');
 
@@ -57,9 +59,7 @@ describe('Should retrieve the weekly scheduler', () => {
     it('Should find an opened scheduler when receiving a valid seller id', async () => {
 
         const weekly_scheduler = await factory.build('Schedule');
-        await expect(createScheduler(weekly_scheduler))
-            .resolves
-            .toBeInstanceOf(Document);
+        await createScheduler(weekly_scheduler);
 
         const { sellerId } = weekly_scheduler;
 
@@ -117,6 +117,31 @@ describe('Should update the weekly scheduler', () => {
 
 });
 
+describe('Should delete a scheduler', () => {
+
+    it('Should remove the scheduler when receiving a valid ObjectId', async () => {
+
+        const payload = await factory.build('Schedule');
+        const scheduler = await createScheduler(payload);
+
+        const { _id } = scheduler;
+
+        await expect(deleteScheduler(_id))
+            .resolves
+            .toBeInstanceOf(Document);
+    });
+
+    it('Should throw an error when seller id is null to set scheduler status from `open` to `closed`', async () => {
+
+        const { sellerId } = await factory.attrs('Schedule', { sellerId: null });
+
+        await expect(closeScheduler(sellerId))
+            .rejects
+            .toThrow();
+    });
+
+});
+
 describe('Should add events to an existing scheduler', () => {
 
     beforeEach(async () => {
@@ -137,6 +162,17 @@ describe('Should add events to an existing scheduler', () => {
         await expect(createEvent(sellerId, event))
             .resolves
             .toBeInstanceOf(Document);
+
+    });
+
+
+    it('Should add events into scheduler when receiving a valid payload', async () => {
+
+        const payload = await factory.attrs('Schedule');
+
+        const { week_events } = await bulkEvents(payload)
+        await expect(week_events)
+            .toHaveLength(4);
 
     });
 

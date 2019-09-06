@@ -83,7 +83,7 @@ async function deleteScheduler(id) {
 
         checkIsNotNull({ id });
 
-        const deletedScheduler = await scheduleModel.deleteOne(id);
+        const deletedScheduler = await scheduleModel.findByIdAndRemove(id);
 
         return deletedScheduler;
 
