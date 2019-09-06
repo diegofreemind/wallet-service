@@ -6,12 +6,14 @@
   "author": "Vitor Diego",
   "license": "MIT",
   "devDependencies": {
+    "eslint": "^6.3.0",
     "factory-girl": "^5.0.4",
     "faker": "^4.1.0",
     "jest": "^24.9.0"
   },
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "pretest": "eslint --ignore-path .gitignore ."
   },
   "dependencies": {
     "dotenv": "^8.1.0",

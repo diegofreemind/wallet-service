@@ -50,7 +50,88 @@ async function getOpenScheduler(sellerId) {
     }
 }
 
-async function updateOpenScheduler(payload) {
+async function closeScheduler(sellerId) {
+
+    try {
+
+        checkIsNotNull({ sellerId });
+
+        const closedScheduler = await scheduleModel.findOneAndUpdate(
+            {
+                sellerId,
+                wallet_status: 'open'
+            },
+            {
+                wallet_status: 'closed'
+            },
+            {
+                new: true
+            });
+
+        return closedScheduler;
+
+    } catch (error) {
+
+        throw new Error(`Could not close the scheduler ${sellerId} : ${error}`);
+
+    }
+}
+
+async function deleteScheduler(id) {
+
+    try {
+
+        checkIsNotNull({ id });
+
+        const deletedScheduler = await scheduleModel.deleteOne(id);
+
+        return deletedScheduler;
+
+    } catch (error) {
+
+        throw new Error(`Could not delete the scheduler ${id} : ${error}`);
+    }
+}
+
+//============== Event stuff ========================
+
+async function createEvent(sellerId, payload) {
+
+    try {
+
+        checkIsNotNull({ payload });
+
+        const { date } = payload;
+        const { isAvailable, busySlot } = await getAvailability(sellerId, date);
+
+        if (isAvailable) {
+
+            const newEvent = scheduleModel.findOneAndUpdate(
+                {
+                    sellerId
+                },
+                {
+                    $push: {
+                        week_events: payload
+                    }
+                },
+                {
+
+                    new: true
+                });
+
+            return newEvent;
+        }
+
+        throw new Error(`Time not available for schedule - planned: ${busySlot}`);
+
+    } catch (error) {
+
+        throw new Error(`Could not create event ${payload} : ${error}`);
+    }
+}
+
+async function bulkEvents(payload) {
 
     try {
 
@@ -69,7 +150,9 @@ async function updateOpenScheduler(payload) {
                     week_events
                 }
             },
-            { new: true });
+            {
+                new: true
+            });
 
         return updatedScheduler;
 
@@ -80,59 +163,11 @@ async function updateOpenScheduler(payload) {
     }
 }
 
-async function closeScheduler() { }
+// async function updateEvent() { }
 
-async function deleteScheduler(id) {
+// async function deleteEvent() { }
 
-    try {
-
-        checkIsNotNull({ id });
-
-        const deletedScheduler = await scheduleModel.deleteOne(id);
-
-        return deletedScheduler;
-
-    } catch (error) {
-
-        throw new Error(`Could not delete the scheduler ${payload} : ${error}`);
-    }
-}
-
-//============== Event stuff ========================
-
-async function createEvent(sellerId, payload) {
-
-    try {
-
-        checkIsNotNull({ payload });
-
-        const { date } = payload;
-        const { isAvailable, busySlot } = await getAvailability(sellerId, date);
-
-        if (isAvailable) {
-
-            const newEvent = scheduleModel.findOneAndUpdate({ sellerId }, {
-                $push: {
-                    week_events: payload
-                }
-            }, { new: true });
-
-            return newEvent;
-        }
-
-        throw new Error(`Time not available for schedule - planned: ${busySlot}`);
-
-    } catch (error) {
-
-        throw new Error(`Could not create event ${payload} : ${error}`);
-    }
-}
-
-async function updateEvent() { }
-
-async function deleteEvent() { }
-
-async function getEvent() { }
+// async function getEvent() { }
 
 
 //============== helpers ========================
@@ -174,11 +209,11 @@ async function getAvailability(sellerId, requestedDate) {
 }
 
 module.exports = {
+    bulkEvents,
     createEvent,
     closeScheduler,
     deleteScheduler,
     getOpenScheduler,
-    updateOpenScheduler,
     createScheduler,
     getAvailability
 }

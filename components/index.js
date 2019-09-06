@@ -11,7 +11,7 @@ app.use('/api', agendaRouter);
 app.use('/api', rankingRouter);
 app.use('/api', scheduleRouter);
 
-app.use((err, req, res, next) => {
+app.use((err, req, res) => {
 
     res.status(500)
         .send(err.message)

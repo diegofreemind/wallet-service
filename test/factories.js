@@ -1,5 +1,4 @@
 const faker = require("faker");
-const moment = require('moment-timezone');
 const { factory } = require("factory-girl");
 const scheduleModel = require('../components/Scheduler/SchedulerModel');
 
@@ -34,10 +33,5 @@ factory.define('Schedule', scheduleModel, {
     sellerId: faker.random.uuid(),
     wallet_status: "open"
 });
-
-function setTimezone(date) {
-
-    return moment.tz(date, 'America/Recife');
-}
 
 module.exports = factory;

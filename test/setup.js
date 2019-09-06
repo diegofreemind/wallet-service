@@ -4,17 +4,7 @@ require('../components/Scheduler/SchedulerModel');
 
 beforeAll(async () => {
 
-    try {
-
-        await connect(mongo_host,
-            {
-                useNewUrlParser: true
-            });
-
-    } catch (error) {
-
-        throw error;
-    }
+    await connect(mongo_host, { useNewUrlParser: true });
 
 });
 

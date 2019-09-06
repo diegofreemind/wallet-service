@@ -7,10 +7,10 @@ const {
     getAvailability,
     getOpenScheduler,
     createScheduler,
-    updateOpenScheduler,
+    closeScheduler,
     createEvent } = require('../../components/Scheduler');
 
-describe('Should create a new scheduler for week', () => {
+describe('Should create a new weekly scheduler', () => {
 
     it('Should return a new a weekly scheduler as Document', async () => {
 
@@ -92,21 +92,27 @@ describe('Should retrieve the weekly scheduler', () => {
 
 describe('Should update the weekly scheduler', () => {
 
-    it.skip('Should set the scheduler status from `open` to `closed`', async () => {
+    beforeEach(async () => {
 
-        const weekly_scheduler = await factory.build('Schedule',
-            {
-                wallet_status: 'closed'
-            });
+        await factory.create('Schedule');
 
-        await expect(createScheduler(weekly_scheduler))
-            .resolves
-            .toBeInstanceOf(Document);
+    });
 
-        //move to closeScheduler
-        await expect(updateOpenScheduler(weekly_scheduler))
-            .resolves
-            .toBeInstanceOf(Document);
+    it('Should set the scheduler status from `open` to `closed`', async () => {
+
+        const { sellerId } = await factory.attrs('Schedule');
+
+        const { wallet_status } = await closeScheduler(sellerId);
+        expect(wallet_status).toBe('closed');
+    });
+
+    it('Should throw an error when seller id is null to set scheduler status from `open` to `closed`', async () => {
+
+        const { sellerId } = await factory.attrs('Schedule', { sellerId: null });
+
+        await expect(closeScheduler(sellerId))
+            .rejects
+            .toThrow();
     });
 
 });
@@ -161,9 +167,9 @@ describe('Should add events to an existing scheduler', () => {
     });
 });
 
-describe('Should validate the format for scheduler', () => {
+describe('Should validate the entries format for scheduler', () => {
 
-    it('checkIsNotNull: Should validate if arguments are not null', async () => {
+    it('Should validate if arguments are not null', async () => {
 
         const { sellerId } = await factory.create('Schedule');
         const date = moment.tz('2019-09-01T15:15:00-03:00', 'America/Recife');
