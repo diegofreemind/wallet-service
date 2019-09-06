@@ -13,7 +13,7 @@ router.post('/scheduler', (req, res, next) => {
         .catch(next);
 });
 
-router.get('/scheduler', (req, res, next) => {
+router.get('/scheduler/:id', (req, res, next) => {
 
     controller.getOpenScheduler(req.params.id)
         .then(openedScheduler => {
@@ -24,9 +24,9 @@ router.get('/scheduler', (req, res, next) => {
 });
 
 
-router.delete('/scheduler', (req, res, next) => {
+router.delete('/scheduler/:_id', (req, res, next) => {
 
-    controller.deleteScheduler(req.params.id)
+    controller.deleteScheduler(req.params._id)
         .then(deletedScheduler => {
 
             res.send(deletedScheduler);
