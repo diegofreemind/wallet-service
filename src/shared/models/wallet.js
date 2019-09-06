@@ -1,6 +1,6 @@
 const { Schema, model } = require('mongoose');
 
-const scheduleSchema = new Schema({
+const walletSchema = new Schema({
     week_events: [
         {
             customerId: {
@@ -29,6 +29,6 @@ const scheduleSchema = new Schema({
 },
     { timestamps: true });
 
-const scheduleModel = model('Schedule', scheduleSchema);
+const walletModel = model('Wallet', walletSchema);
 
-module.exports = scheduleModel;
+module.exports = walletModel;

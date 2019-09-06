@@ -1,99 +1,7 @@
 const moment = require('moment');
-const scheduleModel = require('./SchedulerModel');
-const { checkIsNotNull } = require('../shared/validators');
+const walletModel = require('../shared/models/wallet');
+const { checkIsNotNull } = require('../shared/validators/entries');
 
-
-//============== Scheduler stuff ========================
-
-async function createScheduler(payload) {
-
-    try {
-
-        checkIsNotNull({ payload });
-
-        const alreadyActive = await getOpenScheduler(payload.sellerId);
-
-        if (alreadyActive === null) {
-
-            const model = new scheduleModel(payload);
-            const scheduler = await model.save();
-
-            return scheduler;
-        }
-
-        throw new Error(`Scheduler already opened for the current week - planned : ${alreadyActive}`);
-
-
-    } catch (error) {
-
-        throw new Error(`Could not create the scheduler ${payload} : ${error}`);
-    }
-
-}
-
-async function getOpenScheduler(sellerId) {
-
-    try {
-
-        checkIsNotNull({ sellerId });
-
-        const schedule = await scheduleModel.findOne({
-            sellerId,
-            wallet_status: 'open'
-        });
-
-        return schedule;
-
-    } catch (error) {
-
-        throw new Error(`Could not retrieve schedule for ${sellerId} : ${error}`);
-    }
-}
-
-async function closeScheduler(sellerId) {
-
-    try {
-
-        checkIsNotNull({ sellerId });
-
-        const closedScheduler = await scheduleModel.findOneAndUpdate(
-            {
-                sellerId,
-                wallet_status: 'open'
-            },
-            {
-                wallet_status: 'closed'
-            },
-            {
-                new: true
-            });
-
-        return closedScheduler;
-
-    } catch (error) {
-
-        throw new Error(`Could not close the scheduler ${sellerId} : ${error}`);
-
-    }
-}
-
-async function deleteScheduler(id) {
-
-    try {
-
-        checkIsNotNull({ id });
-
-        const deletedScheduler = await scheduleModel.findByIdAndRemove(id);
-
-        return deletedScheduler;
-
-    } catch (error) {
-
-        throw new Error(`Could not delete the scheduler ${id} : ${error}`);
-    }
-}
-
-//============== Event stuff ========================
 
 async function createEvent(sellerId, payload) {
 
@@ -106,7 +14,7 @@ async function createEvent(sellerId, payload) {
 
         if (isAvailable) {
 
-            const newEvent = scheduleModel.findOneAndUpdate(
+            const newEvent = walletModel.findOneAndUpdate(
                 {
                     sellerId
                 },
@@ -140,7 +48,7 @@ async function bulkEvents(payload) {
         const { sellerId, week_events } = payload;
 
 
-        const updatedScheduler = await scheduleModel.findOneAndUpdate(
+        const updatedScheduler = await walletModel.findOneAndUpdate(
             {
                 sellerId,
                 wallet_status: 'open'
@@ -169,7 +77,7 @@ async function getEvent(sellerId, eventId) {
 
         checkIsNotNull({ sellerId, eventId });
 
-        const { week_events } = await scheduleModel.findOne(
+        const { week_events } = await walletModel.findOne(
             {
                 sellerId,
                 week_events: {
@@ -190,11 +98,10 @@ async function getEvent(sellerId, eventId) {
 
 }
 
-// async function updateEvent() { }
+async function updateEvent() { }
 
-// async function deleteEvent() { }
+async function deleteEvent() { }
 
-//============== helpers ========================
 
 async function getAvailability(sellerId, requestedDate) {
 
@@ -205,7 +112,7 @@ async function getAvailability(sellerId, requestedDate) {
         const range_start = moment(requestedDate).subtract(30, 'minutes').format();
         const range_end = moment(requestedDate).add(30, 'minutes').format();
 
-        const busySlot = await scheduleModel.findOne({
+        const busySlot = await walletModel.findOne({
             sellerId, week_events: {
                 $elemMatch: {
                     date: {
@@ -235,10 +142,8 @@ async function getAvailability(sellerId, requestedDate) {
 module.exports = {
     getEvent,
     bulkEvents,
+    deleteEvent,
+    updateEvent,
     createEvent,
-    closeScheduler,
-    deleteScheduler,
-    getOpenScheduler,
-    createScheduler,
     getAvailability
 }

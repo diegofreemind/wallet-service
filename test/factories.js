@@ -1,10 +1,10 @@
 const faker = require("faker");
 const { factory } = require("factory-girl");
-const scheduleModel = require('../components/Scheduler/SchedulerModel');
+const walletModel = require('../src/shared/models/wallet');
 
 faker.locale = "pt_BR";
 
-factory.define('Schedule', scheduleModel, {
+factory.define('Wallet', walletModel, {
     week_events: [
         {
             customerId: faker.random.uuid(),
